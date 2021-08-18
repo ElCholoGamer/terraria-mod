@@ -1,0 +1,3 @@
+displayName = Cholo's Random Mod
+author = ElCholoGamer
+version = 0.1
