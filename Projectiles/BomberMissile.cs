@@ -2,52 +2,89 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
+using System;
 
 namespace RandomMod.Projectiles
 {
     public class BomberMissile : ModProjectile
     {
-        private readonly int initialSize = 12;
 
         public override void SetDefaults()
         {
-            projectile.width = initialSize;
-            projectile.height = initialSize;
+            projectile.width = projectile.height = 12;
+            projectile.scale = 1.5f;
+            projectile.alpha = 255;
+
+            projectile.timeLeft = 90;
             projectile.ranged = true;
             projectile.friendly = true;
-            projectile.scale = 1.5f;
-            projectile.Opacity = 0f;
+
             aiType = ProjectileID.Bullet;
         }
 
         public override void AI()
         {
-            projectile.ai[0] += 1f; // Timer
-
+            // Sprite direction
             projectile.spriteDirection = projectile.direction = (projectile.velocity.X > 0).ToDirectionInt();
             projectile.rotation = projectile.velocity.ToRotation() + (projectile.spriteDirection == 1 ? 0f : MathHelper.Pi);
 
-            // Kill the projectile after 90 ticks (1.5 seconds)
-            if (projectile.ai[0] >= 90f)
+            projectile.alpha = Math.Max(projectile.alpha - 20, 0); // Increment opacity
+            projectile.scale += 0.02f; // Increment size
+
+            // Trail dust
+            for (int d = 0; d < 3; d++)
             {
-                projectile.Kill();
+                int dustId = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y - (projectile.height / 4)), projectile.width, projectile.height, DustID.Smoke, 0f, 0f, 100, default(Color));
+                Main.dust[dustId].velocity *= 0.1f;
             }
 
-            // Increase projectile size
-            float increment = 0.02f;
-            projectile.scale += increment;
-
-            // Make projectile opaque
-            if(projectile.Opacity < 1f)
-            {
-                projectile.Opacity = MathHelper.Min(projectile.Opacity + 0.05f, 1f);
-            }
+            // Fire trail
+            int fireId = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y - (projectile.height / 4)), projectile.width, projectile.height, DustID.Fire, 0f, 0f, 100, default(Color));
+            Main.dust[fireId].velocity *= 0.1f;
         }
 
-        public override bool PreKill(int timeLeft)
+        public override void Kill(int timeLeft)
         {
-            Main.PlaySound(SoundID.Item14, (int) projectile.Center.X, (int) projectile.Center.Y);
-            return true;
+            Main.PlaySound(SoundID.Item14, projectile.position);
+
+            // Create dust
+            for (int d = 0; d < 20; d++)
+            {
+                Dust.NewDust(
+                    projectile.position,
+                    projectile.width,
+                    projectile.height,
+                    DustID.Smoke,
+                    0f, 0f, 100, default(Color), 1.5f);
+            }
+
+            // Fire
+            for (int d = 0; d < 40; d++)
+            {
+                int dustId = Dust.NewDust(
+                    projectile.position,
+                    projectile.width,
+                    projectile.height,
+                    DustID.Fire,
+                    0f, 0f, 100, default(Color), 1.5f);
+                Main.dust[dustId].noGravity = true;
+                Main.dust[dustId].velocity *= 5f;
+            }
+
+            // Chonky smoke
+            for (int g = 0; g < 7; g++)
+            {
+                Gore.NewGore(projectile.Center, default(Vector2), Main.rand.Next(61, 64), 1);
+            }
+
+            // Spawn explosion
+            Projectile.NewProjectile(
+                projectile.Center, 
+                Vector2.Zero, 
+                ModContent.ProjectileType<BomberExplosion>(), 
+                projectile.damage / 2, 
+                projectile.knockBack, 
+                projectile.owner);
         }
     }
 }
