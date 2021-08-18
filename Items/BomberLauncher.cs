@@ -11,12 +11,12 @@ namespace RandomMod.Items
         public override void SetStaticDefaults()
         {
             DisplayName.SetDefault("The Bomber");
-            Tooltip.SetDefault("The power of a hundred bombs in your hands");
+            Tooltip.SetDefault("'The power of a hundred bombs in your hands'");
         }
 
         public override void SetDefaults()
         {
-            item.damage = 157;
+            item.damage = 182;
             item.ranged = true;
             item.noMelee = true;
             item.autoReuse = true;
