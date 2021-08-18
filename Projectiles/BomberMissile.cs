@@ -44,7 +44,7 @@ namespace CholosRandomMod.Projectiles
 
 
             // Spawn trailing mines
-            if(++projectile.ai[0] >= 15)
+            if(Main.myPlayer == projectile.owner && ++projectile.ai[0] >= 15)
             {
                 projectile.ai[0] = 0;
 
@@ -92,13 +92,16 @@ namespace CholosRandomMod.Projectiles
             }
 
             // Spawn explosion
-            Projectile.NewProjectile(
-                projectile.Center, 
-                Vector2.Zero, 
-                ModContent.ProjectileType<BomberExplosion>(), 
-                projectile.damage / 2, 
-                projectile.knockBack, 
+            if(Main.myPlayer == projectile.owner)
+            {
+                Projectile.NewProjectile(
+                projectile.Center,
+                Vector2.Zero,
+                ModContent.ProjectileType<BomberExplosion>(),
+                projectile.damage / 2,
+                projectile.knockBack,
                 projectile.owner);
+            }
         }
     }
 }

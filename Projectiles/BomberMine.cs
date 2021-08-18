@@ -36,6 +36,11 @@ namespace CholosRandomMod.Projectiles
             }
         }
 
+        public override bool? CanHitNPC(NPC target)
+        {
+            return false;
+        }
+
         public override void Kill(int timeLeft)
         {
             Main.PlaySound(SoundID.Item14, projectile.Center); // Explosion sound
@@ -58,13 +63,16 @@ namespace CholosRandomMod.Projectiles
             }
 
             // Spawn explosion
-            Projectile.NewProjectile(
-                projectile.Center, 
-                Vector2.Zero, 
-                ModContent.ProjectileType<BomberExplosion>(), 
-                projectile.damage, 
-                projectile.knockBack, 
+            if(Main.myPlayer == projectile.owner)
+            {
+                Projectile.NewProjectile(
+                projectile.Center,
+                Vector2.Zero,
+                ModContent.ProjectileType<BomberExplosion>(),
+                projectile.damage,
+                projectile.knockBack,
                 projectile.owner);
+            }
         }
     }
 }
