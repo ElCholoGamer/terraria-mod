@@ -1,10 +1,10 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
-using RandomMod.Projectiles;
+using CholosRandomMod.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
 
-namespace RandomMod.Items
+namespace CholosRandomMod.Items
 {
     public class BomberLauncher : ModItem
     {

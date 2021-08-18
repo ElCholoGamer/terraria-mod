@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using System;
 
-namespace RandomMod.Projectiles
+namespace CholosRandomMod.Projectiles
 {
     public class BomberMissile : ModProjectile
     {
@@ -41,13 +41,27 @@ namespace RandomMod.Projectiles
             // Fire trail
             int fireId = Dust.NewDust(new Vector2(projectile.position.X, projectile.position.Y - (projectile.height / 4)), projectile.width, projectile.height, DustID.Fire, 0f, 0f, 100, default(Color));
             Main.dust[fireId].velocity *= 0.1f;
+
+
+            // Spawn trailing mines
+            if(++projectile.ai[0] >= 15)
+            {
+                projectile.ai[0] = 0;
+
+                Projectile.NewProjectile(
+                    projectile.Center,
+                    Vector2.Zero,
+                    ModContent.ProjectileType<BomberMine>(),
+                    projectile.damage / 2,
+                    projectile.knockBack, projectile.owner);
+            }
         }
 
         public override void Kill(int timeLeft)
         {
-            Main.PlaySound(SoundID.Item14, projectile.position);
+            Main.PlaySound(SoundID.Item14, projectile.Center);
 
-            // Create dust
+            // Smoke dust
             for (int d = 0; d < 20; d++)
             {
                 Dust.NewDust(
@@ -58,7 +72,7 @@ namespace RandomMod.Projectiles
                     0f, 0f, 100, default(Color), 1.5f);
             }
 
-            // Fire
+            // Fire dust
             for (int d = 0; d < 40; d++)
             {
                 int dustId = Dust.NewDust(

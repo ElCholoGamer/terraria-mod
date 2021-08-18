@@ -1,7 +1,7 @@
 ﻿using Terraria.ID;
 using Terraria.ModLoader;
 
-namespace RandomMod.Projectiles
+namespace CholosRandomMod.Projectiles
 {
     class BomberExplosion : ModProjectile
     {
