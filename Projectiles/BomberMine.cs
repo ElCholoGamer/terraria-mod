@@ -20,6 +20,7 @@ namespace CholosRandomMod.Projectiles
             projectile.timeLeft = 150;
 
             drawOriginOffsetY = -11;
+            drawOffsetX = -11;
         }
 
         public override void AI()

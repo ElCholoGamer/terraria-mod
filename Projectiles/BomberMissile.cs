@@ -11,7 +11,7 @@ namespace CholosRandomMod.Projectiles
 
         public override void SetDefaults()
         {
-            projectile.width = projectile.height = 12;
+            projectile.width = projectile.height = 13;
             projectile.scale = 1.5f;
             projectile.alpha = 255;
 
@@ -20,6 +20,7 @@ namespace CholosRandomMod.Projectiles
             projectile.friendly = true;
 
             aiType = ProjectileID.Bullet;
+            drawOriginOffsetY = 3;
         }
 
         public override void AI()
@@ -44,7 +45,7 @@ namespace CholosRandomMod.Projectiles
 
 
             // Spawn trailing mines
-            if(Main.myPlayer == projectile.owner && ++projectile.ai[0] >= 15)
+            if (Main.myPlayer == projectile.owner && ++projectile.ai[0] >= 15)
             {
                 projectile.ai[0] = 0;
 
@@ -92,7 +93,7 @@ namespace CholosRandomMod.Projectiles
             }
 
             // Spawn explosion
-            if(Main.myPlayer == projectile.owner)
+            if (Main.myPlayer == projectile.owner)
             {
                 Projectile.NewProjectile(
                 projectile.Center,
