@@ -4,7 +4,7 @@ using CholosRandomMod.Projectiles;
 
 namespace CholosRandomMod.Items
 {
-    class MartianTome : ModItem
+    public class MartianTome : ModItem
     {
         public override void SetStaticDefaults()
         {

@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace CholosRandomMod.Items
 {
-    class SupremeManipulator : ModItem
+    public class SupremeManipulator : ModItem
     {
         public override void SetStaticDefaults()
         {

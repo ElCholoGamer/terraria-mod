@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 
 namespace CholosRandomMod.Projectiles
 {
-    class BomberMine : ModProjectile
+    public class BomberMine : ModProjectile
     {
         public override void SetStaticDefaults()
         {

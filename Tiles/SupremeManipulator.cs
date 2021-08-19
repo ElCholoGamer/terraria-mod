@@ -7,7 +7,7 @@ using Microsoft.Xna.Framework;
 
 namespace CholosRandomMod.Tiles
 {
-    class SupremeManipulator : ModTile
+    public class SupremeManipulator : ModTile
     {
         public static int[] workStations = new int[] {
                 TileID.WorkBenches,

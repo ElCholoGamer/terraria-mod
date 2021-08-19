@@ -3,7 +3,7 @@ using Terraria.ModLoader;
 
 namespace CholosRandomMod.Projectiles
 {
-    class BomberExplosion : ModProjectile
+    public class BomberExplosion : ModProjectile
     {
         public override void SetDefaults()
         {

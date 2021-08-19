@@ -5,7 +5,7 @@ using Terraria.ModLoader;
 
 namespace CholosRandomMod.Projectiles
 {
-    class MartianProjectile : ModProjectile
+    public class MartianProjectile : ModProjectile
     {
         public override void SetDefaults()
         {

@@ -4,7 +4,7 @@ using Terraria.ModLoader;
 
 namespace CholosRandomMod.NPCs
 {
-    class ElectrifiedInmune : GlobalNPC
+    public class ElectrifiedInmune : GlobalNPC
     {
         public override void SetDefaults(NPC npc)
         {
