@@ -22,7 +22,7 @@ namespace CholosRandomMod.Projectiles
 
         public override void AI()
         {
-            projectile.alpha = (int)MathHelper.Max(projectile.alpha - 50f, 100f);
+            projectile.alpha = (int)MathHelper.Max(projectile.alpha - 20f, 100f);
             projectile.rotation += MathHelper.ToRadians(5);
 
             float maxVelocity = 15f;
