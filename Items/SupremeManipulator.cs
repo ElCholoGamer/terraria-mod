@@ -15,8 +15,8 @@ namespace CholosRandomMod.Items
         {
             item.noMelee = true;
             item.createTile = ModContent.TileType<Tiles.SupremeManipulator>();
-            item.maxStack = 20;
-            item.value = 1250000;
+            item.maxStack = 99;
+            item.value = 1000000;
             item.useTime = 10;
             item.useAnimation = 15;
             item.useStyle = ItemUseStyleID.SwingThrow;
