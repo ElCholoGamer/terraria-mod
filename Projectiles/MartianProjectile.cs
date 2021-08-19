@@ -10,7 +10,7 @@ namespace CholosRandomMod.Projectiles
         public override void SetDefaults()
         {
             projectile.width = projectile.height = 32;
-            projectile.alpha = 0;
+            projectile.alpha = 255;
 
             projectile.timeLeft = 300;
             projectile.magic = true;
@@ -22,10 +22,15 @@ namespace CholosRandomMod.Projectiles
 
         public override void AI()
         {
-            projectile.alpha = (int)MathHelper.Max(projectile.alpha - 50f, 0f);
+            projectile.alpha = (int)MathHelper.Max(projectile.alpha - 50f, 100f);
             projectile.rotation += MathHelper.ToRadians(5);
 
             float maxVelocity = 15f;
+
+            // Dust trail
+            int dustId = Dust.NewDust(projectile.position, projectile.width, projectile.height, DustID.GreenFairy);
+            Main.dust[dustId].noGravity = true;
+            Main.dust[dustId].velocity = Vector2.Zero;
 
             // Initial acceleration
             if (++projectile.ai[0] < 20)
@@ -77,7 +82,30 @@ namespace CholosRandomMod.Projectiles
 
         public override void Kill(int timeLeft)
         {
+            Main.PlaySound(SoundID.NPCDeath56, projectile.Center);
 
+            if (Main.myPlayer == projectile.owner)
+            {
+                int amount = 5 + Main.rand.Next(6);
+                for (int s = 0; s < amount; s++)
+                {
+                    Vector2 velocity = Main.rand.NextVector2Unit(-(MathHelper.Pi * 3/4), MathHelper.PiOver2) * 5f;
+
+                    int sparkId = Projectile.NewProjectile(
+                    projectile.Center,
+                    velocity,
+                    ProjectileID.SaucerScrap,
+                    projectile.damage,
+                    projectile.knockBack / 2,
+                    projectile.owner);
+
+                    Main.projectile[sparkId].friendly = true;
+                    Main.projectile[sparkId].hostile = false;
+                    Main.projectile[sparkId].magic = true;
+                    Main.projectile[sparkId].alpha = 200;
+                }
+
+            }
         }
     }
 }

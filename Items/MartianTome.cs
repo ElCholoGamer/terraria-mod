@@ -14,7 +14,7 @@ namespace CholosRandomMod.Items
 
         public override void SetDefaults()
         {
-            item.damage = 90;
+            item.damage = 140;
             item.noMelee = true;
             item.useStyle = ItemUseStyleID.HoldingOut;
             item.knockBack = 4;
