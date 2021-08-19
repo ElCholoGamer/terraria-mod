@@ -17,7 +17,6 @@ namespace CholosRandomMod.Buffs
 
             npc.lifeRegen -= 32;
 
-            // Electricity dust (TODO: Make some NPCs inmune to this)
             Dust.NewDust(npc.position, npc.width, npc.height, DustID.Electric, default, default, default, default, 0.5f);
         }
     }
