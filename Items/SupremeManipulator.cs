@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 
 namespace CholosRandomMod.Items
@@ -16,7 +17,7 @@ namespace CholosRandomMod.Items
             item.noMelee = true;
             item.createTile = ModContent.TileType<Tiles.SupremeManipulator>();
             item.maxStack = 99;
-            item.value = 1000000;
+            item.value = Item.buyPrice(0, 50, 0, 0);
             item.useTime = 10;
             item.useAnimation = 15;
             item.useStyle = ItemUseStyleID.SwingThrow;

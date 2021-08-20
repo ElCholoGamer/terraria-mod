@@ -1,4 +1,5 @@
-﻿using Terraria.ID;
+﻿using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using CholosRandomMod.Projectiles;
 
@@ -20,7 +21,7 @@ namespace CholosRandomMod.Items
             item.knockBack = 4;
             item.useTime = 15;
             item.useAnimation = 15;
-            item.value = 150000;
+            item.value = Item.buyPrice(0, 15, 0, 0);
             item.magic = true;
             item.mana = 10;
             item.autoReuse = true;

@@ -24,7 +24,7 @@ namespace CholosRandomMod.Items
             item.knockBack = 4;
             item.useTime = 30;
             item.useAnimation = 30;
-            item.value = 10000;
+            item.value = Item.buyPrice(0, 10, 0, 0);
             item.shoot = ModContent.ProjectileType<BomberMissile>();
             item.shootSpeed = 15f;
             item.useAmmo = AmmoID.Rocket;
