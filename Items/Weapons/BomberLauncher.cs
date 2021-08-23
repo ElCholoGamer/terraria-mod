@@ -4,7 +4,7 @@ using CholosRandomMod.Projectiles;
 using Microsoft.Xna.Framework;
 using Terraria;
 
-namespace CholosRandomMod.Items
+namespace CholosRandomMod.Items.Weapons
 {
     public class BomberLauncher : ModItem
     {

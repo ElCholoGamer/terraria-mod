@@ -5,7 +5,7 @@ using Microsoft.Xna.Framework;
 using CholosRandomMod.Buffs;
 using CholosRandomMod.Projectiles.Minions;
 
-namespace CholosRandomMod.Items
+namespace CholosRandomMod.Items.Weapons
 {
     public class SpiritStaff : ModItem
     {

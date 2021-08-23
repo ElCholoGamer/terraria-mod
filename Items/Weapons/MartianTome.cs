@@ -3,7 +3,7 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using CholosRandomMod.Projectiles;
 
-namespace CholosRandomMod.Items
+namespace CholosRandomMod.Items.Weapons
 {
     public class MartianTome : ModItem
     {
