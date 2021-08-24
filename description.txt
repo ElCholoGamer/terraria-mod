@@ -6,3 +6,4 @@ Currently adds:
 - Extraterrestrial Tome: A magic spell that fires a tesla turret that explodes into sparks.
 - Dungeon Spirit Staff: Summons a spirit minion that shoots homing lost souls.
 - Supreme Manipulator: A crafting station that acts as most crafting stations as well as a demon altar.
+- Mutated Slime: A slime variant that spawns in both evil biomes and shoots spikes after jumping.
