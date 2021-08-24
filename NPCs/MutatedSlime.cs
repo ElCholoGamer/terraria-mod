@@ -92,7 +92,7 @@ namespace CholosRandomMod.NPCs
 
                 if (npc.HasValidTarget)
                 {
-                    if (PreviousYVelocity > 0f) // Has just landed
+                    if (Main.netMode != NetmodeID.MultiplayerClient && PreviousYVelocity > 0f)
                     {
                         // Shoot spikes
                         for (int p = 0; p < 10; p++)
@@ -108,10 +108,11 @@ namespace CholosRandomMod.NPCs
                             Vector2 velocity = (npc.Center - Main.player[npc.target].Center) * 0.4f;
 
                             float magnitude = velocity.Length();
-                            if(magnitude > maxMagnitude)
+                            if (magnitude > maxMagnitude)
                             {
                                 velocity *= maxMagnitude / magnitude;
-                            } else if(magnitude < minMagnitude)
+                            }
+                            else if (magnitude < minMagnitude)
                             {
                                 velocity *= minMagnitude / magnitude;
                             }
@@ -124,11 +125,12 @@ namespace CholosRandomMod.NPCs
 
                             Projectile.NewProjectile(npc.Center, velocity, ProjectileID.SpikedSlimeSpike, 20, 0f);
                         }
-
-                        JumpTimer = jumpCooldown;
                     }
-                    JumpTimer--;
+
+                    JumpTimer = jumpCooldown;
+                    npc.netUpdate = true;
                 }
+                JumpTimer--;
 
                 // Friction
                 npc.velocity.X *= 0.74f;
@@ -150,12 +152,13 @@ namespace CholosRandomMod.NPCs
                 npc.velocity.X = horizontalSpeed;
             }
 
+            if (!npc.HasValidTarget)
+            {
+                npc.TargetClosest(false);
+                if (!npc.HasValidTarget) return;
+            }
 
-            npc.TargetClosest();
-
-            if (!npc.HasValidTarget) return;
-
-            if (JumpTimer == 0f)
+            if (Main.netMode != NetmodeID.MultiplayerClient && JumpTimer == 0f)
             {
                 // Jump
                 BigJumpTimer++;
@@ -174,6 +177,8 @@ namespace CholosRandomMod.NPCs
                 JumpDirection = Math.Sign(distanceToPlayer);
 
                 JumpTimer = jumpCooldown;
+
+                npc.netUpdate = true;
             }
 
             PreviousYVelocity = npc.velocity.Y;
