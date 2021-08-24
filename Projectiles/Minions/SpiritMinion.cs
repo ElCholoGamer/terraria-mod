@@ -98,10 +98,9 @@ namespace CholosRandomMod.Projectiles.Minions
             else
             {
                 // Attack
-                Vector2 distanceFromTarget = projectile.Center - target.Center;
+                Vector2 distanceFromTarget = projectile.DirectionFrom(target.Center);
 
                 float shootingRange = 150f;
-                distanceFromTarget.Normalize();
                 distanceFromTarget *= shootingRange;
                 distanceFromTarget = distanceFromTarget.RotatedBy(MathHelper.ToRadians(projectile.minionPos * 0.1f));
 
@@ -132,8 +131,7 @@ namespace CholosRandomMod.Projectiles.Minions
                 {
                     projectile.ai[0] = 0f;
 
-                    Vector2 towardsTarget = distanceToTarget;
-                    towardsTarget.Normalize();
+                    Vector2 towardsTarget = projectile.DirectionTo(target.Center);
 
                     if (Main.myPlayer == projectile.owner)
                     {
