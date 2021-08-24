@@ -190,5 +190,10 @@ namespace CholosRandomMod.NPCs
                 npc.frame.Y = frameIndex * frameHeight;
             }
         }
+
+        public override void NPCLoot()
+        {
+            Item.NewItem(npc.getRect(), ItemID.Gel, 1 + Main.rand.Next(2));
+        }
     }
 }
