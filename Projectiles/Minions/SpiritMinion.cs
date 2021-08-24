@@ -127,24 +127,21 @@ namespace CholosRandomMod.Projectiles.Minions
                 projectile.rotation = distanceToTarget.ToRotation() + MathHelper.PiOver2;
 
                 // Shoot projectile
-                if (distanceToTargetPosition.Length() < 200f && ++projectile.ai[0] >= 30f)
+                if (Main.myPlayer == projectile.owner && distanceToTargetPosition.Length() < 200f && ++projectile.ai[0] >= 30f)
                 {
                     projectile.ai[0] = 0f;
 
                     Vector2 towardsTarget = projectile.DirectionTo(target.Center);
 
-                    if (Main.myPlayer == projectile.owner)
-                    {
-                        int projId = Projectile.NewProjectile(
-                            projectile.Center,
-                            new Vector2(20f, 0f).RotatedBy(towardsTarget.ToRotation()),
-                            ProjectileID.LostSoulFriendly,
-                            projectile.damage,
-                            projectile.knockBack,
-                            projectile.owner);
+                    int projId = Projectile.NewProjectile(
+                        projectile.Center,
+                        new Vector2(20f, 0f).RotatedBy(towardsTarget.ToRotation()),
+                        ProjectileID.LostSoulFriendly,
+                        projectile.damage,
+                        projectile.knockBack,
+                        projectile.owner);
 
-                        Main.projectile[projId].tileCollide = false;
-                    }
+                    Main.projectile[projId].tileCollide = false;
                 }
             }
 
