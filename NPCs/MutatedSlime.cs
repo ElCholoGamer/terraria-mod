@@ -186,7 +186,7 @@ namespace CholosRandomMod.NPCs
 
         public override void FindFrame(int frameHeight)
         {
-            float targetCounter = (JumpTimer > 10f) ? 5f : 5f;
+            float targetCounter = 5f;
             if (++npc.frameCounter >= targetCounter)
             {
                 npc.frameCounter = 0f;

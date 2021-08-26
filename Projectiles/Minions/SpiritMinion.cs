@@ -9,7 +9,7 @@ namespace CholosRandomMod.Projectiles.Minions
 {
     public class SpiritMinion : ModProjectile
     {
-        private readonly float RANGE = 1500f;
+        private const float Range = 1500f;
         private NPC target = null;
 
         public override void SetStaticDefaults()
@@ -66,7 +66,7 @@ namespace CholosRandomMod.Projectiles.Minions
 
             Vector2 idleDistance = idlePosition - projectile.Center;
 
-            if (idleDistance.Length() > RANGE)
+            if (idleDistance.Length() > Range)
             {
                 target = FindTarget();
                 if (target == null)
@@ -207,7 +207,7 @@ namespace CholosRandomMod.Projectiles.Minions
             Player player = Main.player[projectile.owner];
 
             NPC target = null;
-            float currentDistanceSquared = (float)Math.Pow(RANGE, 2);
+            float currentDistanceSquared = (float)Math.Pow(Range, 2);
 
             // Find closest target
             for (int i = 0; i < Main.maxNPCs; i++)
@@ -219,7 +219,7 @@ namespace CholosRandomMod.Projectiles.Minions
                 Vector2 distanceFromPlayer = possibleTarget.Center - player.Center;
                 float distanceSquared = distanceFromProjectile.LengthSquared();
 
-                if (distanceSquared < currentDistanceSquared && distanceFromPlayer.Length() <= RANGE)
+                if (distanceSquared < currentDistanceSquared && distanceFromPlayer.Length() <= Range)
                 {
                     target = possibleTarget;
                     currentDistanceSquared = distanceSquared;
