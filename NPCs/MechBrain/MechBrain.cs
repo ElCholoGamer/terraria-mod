@@ -299,8 +299,8 @@ namespace CholosRandomMod.NPCs.MechBrain
             }
 
             // Adjust velocity
-            int spreadDegrees = 135;
-            velocity = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(spreadDegrees) - (spreadDegrees / 2)));
+            float spreadDegrees = 135f;
+            velocity = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.NextFloat(spreadDegrees) - (spreadDegrees / 2)));
             velocity *= 15f + Main.rand.NextFloat(15f);
 
             illusions.Add((spawnAt, velocity));
