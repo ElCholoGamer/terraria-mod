@@ -2,7 +2,9 @@
 using Terraria.ID;
 using Terraria.ModLoader;
 using System;
+using System.Collections.Generic;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 
 namespace CholosRandomMod.NPCs.MechBrain
 {
@@ -15,6 +17,9 @@ namespace CholosRandomMod.NPCs.MechBrain
         private bool spawnedCreepers = false;
         private bool secondPhase = false;
         private bool forceSprite = false;
+
+        private List<(Vector2 position, Vector2 velocity)> illusions = new List<(Vector2, Vector2)>();
+        private float illusionTimer = 0f;
 
         public override bool Autoload(ref string name)
         {
@@ -89,7 +94,7 @@ namespace CholosRandomMod.NPCs.MechBrain
             // This will check that they will only spawn on the server
             if (Main.netMode != NetmodeID.MultiplayerClient && !spawnedCreepers)
             {
-                for (int c = 0; c < MaxCreepers; c++)
+                for (int c = 0; c < 0; c++)
                 {
                     float x = Main.rand.NextFloat(npc.width);
                     float y = Main.rand.NextFloat(npc.height);
@@ -104,9 +109,9 @@ namespace CholosRandomMod.NPCs.MechBrain
                 npc.netUpdate = true;
             }
 
-            // Despawn during daytime
             if (Main.dayTime || !npc.HasValidTarget)
             {
+                // Despawn
                 CycleTimer = 0f;
                 DespawnAI();
                 return;
@@ -224,7 +229,31 @@ namespace CholosRandomMod.NPCs.MechBrain
 
         private void Phase2AI()
         {
+            // Random illusions
+            if (--illusionTimer <= 0)
+            {
+                NewIllusion();
+                illusionTimer = 5f + (40f * (npc.life / npc.lifeMax)); // Increase illusions as life decreases
+            }
 
+            List<int> deleteNext = new List<int>();
+            for (int i = 0; i < illusions.Count; i++)
+            {
+                var illusion = illusions[i];
+                (Vector2 position, Vector2 velocity) = illusion;
+                illusions[i] = (position += velocity, velocity);
+
+                float halfWidth = npc.frame.Width / 2f;
+                float halfHeight = npc.frame.Height / 2f;
+                
+                if (position.X > Main.screenWidth + halfWidth || position.X < -halfWidth || position.Y > Main.screenHeight + halfHeight || position.Y < -halfHeight)
+                {
+                    deleteNext.Add(i);
+                }
+            }
+
+            deleteNext.Reverse();
+            deleteNext.ForEach(index => illusions.RemoveRange(index, 1));
         }
 
         private void DespawnAI()
@@ -238,6 +267,45 @@ namespace CholosRandomMod.NPCs.MechBrain
             }
         }
 
+        private void NewIllusion()
+        {
+            Vector2 spawnAt;
+            Vector2 velocity;
+
+            float halfWidth = npc.frame.Width / 2f;
+            float halfHeight = npc.frame.Height / 2f;
+
+            // Choose a starting side
+            switch (Main.rand.Next(4))
+            {
+                case 0: // Up
+                    spawnAt = new Vector2(Main.rand.NextFloat(Main.screenWidth), -halfHeight);
+                    velocity = new Vector2(0f, 1f);
+                    break;
+                case 1: // Right
+                    spawnAt = new Vector2(Main.screenWidth + halfWidth, Main.rand.NextFloat(Main.screenHeight));
+                    velocity = new Vector2(-1f, 0f);
+                    break;
+                case 2: // Down
+                    spawnAt = new Vector2(Main.rand.NextFloat(Main.screenWidth), Main.screenHeight + halfHeight);
+                    velocity = new Vector2(0f, -1f);
+                    break;
+                case 3: // Left
+                    spawnAt = new Vector2(-halfWidth, Main.rand.NextFloat(Main.screenHeight));
+                    velocity = new Vector2(1f, 0f);
+                    break;
+                default:
+                    return;
+            }
+
+            // Adjust velocity
+            int spreadDegrees = 135;
+            velocity = velocity.RotatedBy(MathHelper.ToRadians(Main.rand.Next(spreadDegrees) - (spreadDegrees / 2)));
+            velocity *= 15f + Main.rand.NextFloat(15f);
+
+            illusions.Add((spawnAt, velocity));
+        }
+
         private int GetKilledCreepers()
         {
             return MaxCreepers - Math.Min(NPC.CountNPCS(ModContent.NPCType<MechCreeper>()), MaxCreepers);
@@ -247,6 +315,38 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             float moveDuration = 120 - (GetKilledCreepers() * (60f / MaxCreepers));
             CycleDuration = (fadeDuration * 2) + moveDuration + dashDuration;
+        }
+
+        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        {
+            if (!secondPhase) return;
+
+            // Parallel illusions
+            Texture2D texture = Main.npcTexture[npc.type];
+            Player player = Main.player[Main.myPlayer];
+
+            float opacity = 1f - ((float)npc.life / npc.lifeMax);
+
+            Vector2 center = player.Center - Main.screenPosition;
+            Vector2 drawPosition = player.Center - npc.Center;
+            Vector2 drawOffset = new Vector2(npc.frame.Width / 2f, npc.frame.Height / 2f);
+
+            drawPosition.X *= -1f;
+            spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity);
+
+            drawPosition.X *= -1f;
+            spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity);
+
+            drawPosition.Y *= -1f;
+            spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity);
+
+            // Random illusions
+            for (int i = 0; i < illusions.Count; i++)
+            {
+                (Vector2 position, Vector2 _) = illusions[i];
+
+                spriteBatch.Draw(texture, position - drawOffset, npc.frame, drawColor * opacity * 0.65f);
+            }
         }
 
         public override void FindFrame(int frameHeight)
