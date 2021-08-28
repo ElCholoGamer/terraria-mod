@@ -9,7 +9,6 @@ namespace CholosRandomMod.NPCs.MechBrain
     public class MechCreeper : ModNPC
     {
         private Vector2 homeOffset;
-        private float cycleTimer = 0f;
 
         public override void SetStaticDefaults()
         {
@@ -23,13 +22,15 @@ namespace CholosRandomMod.NPCs.MechBrain
             npc.damage = 55;
             npc.defense = 15;
             npc.knockBackResist = 0f;
-            npc.width = npc.height = 16;
+            npc.width = npc.height = 24;
             npc.lavaImmune = true;
             npc.noGravity = true;
             npc.noTileCollide = true;
             npc.HitSound = SoundID.NPCHit4;
             npc.DeathSound = SoundID.NPCDeath14;
             npc.buffImmune[BuffID.Poisoned] = true;
+
+            drawOffsetY = 2;
         }
 
         public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
@@ -50,6 +51,18 @@ namespace CholosRandomMod.NPCs.MechBrain
             set => npc.ai[1] = value;
         }
 
+        private float ShootTimer
+        {
+            get => npc.ai[2];
+            set => npc.ai[2] = value;
+        }
+
+        private float CycleTimer
+        {
+            get => npc.ai[3];
+            set => npc.ai[3] = value;
+        }
+
         public override void AI()
         {
             // Find MechBrain owner
@@ -63,31 +76,24 @@ namespace CholosRandomMod.NPCs.MechBrain
                 return;
             }
 
-            // Target player
-            if (!npc.HasValidTarget)
+            // Set initial timers
+            if (ChargeAt == 0f || ChargeDuration == 0f)
             {
-                npc.TargetClosest(false);
+                SetRandomStuff(owner);
                 return;
             }
 
-            // Set initial timers
-            if (ChargeAt == 0f || ChargeDuration == 0f)
-                SetRandomStuff(owner);
-
+            // A cycle consists of:
+            // 1) Staying at home position
+            // 2) Charge
             float cycleDuration = ChargeAt + ChargeDuration;
-            cycleTimer++;
+            CycleTimer++;
 
-            // Reset cycle
-            if (cycleTimer >= cycleDuration) {
-                SetRandomStuff(owner);
-                cycleTimer = 0;
-            }
-
-            bool charging = cycleTimer >= ChargeAt;
+            bool charging = CycleTimer >= ChargeAt;
 
             // Go to respective position
-            float speed = 15f;
-            float inertia = 30f;
+            float speed = 10f;
+            float inertia = 20f;
 
             Player player = Main.player[npc.target];
             Vector2 targetPosition = charging ? player.Center : GetHomePosition(owner);
@@ -95,6 +101,42 @@ namespace CholosRandomMod.NPCs.MechBrain
             Vector2 direction = npc.DirectionTo(targetPosition) * speed;
 
             npc.velocity = (npc.velocity * (inertia - 1f) + direction) / inertia;
+
+            // Target player
+            if (!npc.HasValidTarget)
+            {
+                npc.TargetClosest(false);
+                return;
+            }
+
+            // Reset cycle
+            if (CycleTimer >= cycleDuration)
+            {
+                SetRandomStuff(owner);
+                CycleTimer = 0;
+            }
+
+            // Shoot when timer reaches 0
+            if (Main.netMode != NetmodeID.MultiplayerClient && --ShootTimer <= 0)
+            {
+                Vector2 velocity = npc.DirectionTo(player.Center) * 8f;
+
+                float spreadRange = 30f;
+                float spread = MathHelper.ToRadians(Main.rand.NextFloat(spreadRange) - (spreadRange / 2));
+
+                int damage = 55;
+                if (Main.expertMode) damage = (int)(damage * 0.8f);
+
+                Projectile.NewProjectile(npc.Center, velocity.RotatedBy(spread), ProjectileID.PinkLaser, damage / 2, 0f, Main.myPlayer);
+                Main.PlaySound(SoundID.Item33, npc.Center);
+
+                int maxCreepers = 20;
+                int killedCreepers = maxCreepers - (int)MathHelper.Min(NPC.CountNPCS(npc.type), maxCreepers);
+
+                float randomDelay = Main.rand.NextFloat(240f - (killedCreepers * (190f / maxCreepers)));
+                ShootTimer += 180f + randomDelay - (killedCreepers * (140f / maxCreepers));
+                npc.netUpdate = true;
+            }
         }
 
         public override void SendExtraAI(BinaryWriter writer)
