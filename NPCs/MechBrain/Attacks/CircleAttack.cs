@@ -23,6 +23,12 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
         public override void AI()
         {
+            // Telegraph dash
+            if (modNPC.CycleTimer == 60f)
+            {
+                modNPC.RedRing();
+            }
+
             if (rotationSpeed > 0.1f)
             {
                 float circleRadius = 250f;
@@ -56,7 +62,6 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
                 modNPC.npc.velocity = modNPC.npc.DirectionTo(modNPC.Target.Center) * 15f;
 
-                modNPC.RedRing();
                 Main.PlaySound(SoundID.Roar, (int)modNPC.npc.Center.X, (int)modNPC.npc.Center.Y, 0, 1, 0.6f);
             }
             else
