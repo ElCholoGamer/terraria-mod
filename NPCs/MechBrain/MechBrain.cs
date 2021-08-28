@@ -10,6 +10,8 @@ using Terraria.ModLoader;
 
 namespace CholosRandomMod.NPCs.MechBrain
 {
+
+    [AutoloadBossHead]
     public class MechBrain : ModNPC
     {
         public const string MechBrainHead = "CholosRandomMod/NPCs/MechBrain/MechBrain_Head_Boss";
@@ -27,12 +29,6 @@ namespace CholosRandomMod.NPCs.MechBrain
         public MechBrain()
         {
             phase2Attacks = new NPCAttack<MechBrain>[] { new CircleAttack(this) };
-        }
-
-        public override bool Autoload(ref string name)
-        {
-            mod.AddBossHeadTexture(MechBrainHead);
-            return base.Autoload(ref name);
         }
 
         public override void SetStaticDefaults()
@@ -73,7 +69,7 @@ namespace CholosRandomMod.NPCs.MechBrain
 
         public override void BossHeadSlot(ref int index)
         {
-            index = ModContent.GetModBossHeadSlot(MechBrainHead);
+            index = SecondPhase ? -1 : ModContent.GetModBossHeadSlot(MechBrainHead);
         }
 
         // Just for convenience
@@ -81,7 +77,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             get => Main.player[npc.target];
         }
-
+        
         public NPCAttack<MechBrain> CurrentAttack
         {
             get => phase2Attacks[(int)AttackIndex];
@@ -254,7 +250,7 @@ namespace CholosRandomMod.NPCs.MechBrain
             // Telegraph dash
             if (CycleTimer == fadeDuration + moveDuration - 45f)
             {
-                Main.PlaySound(SoundID.Item12, npc.Center);
+                Main.PlaySound(SoundID.Roar, npc.Center, 0);
                 RedRing();
             }
 
@@ -437,29 +433,33 @@ namespace CholosRandomMod.NPCs.MechBrain
             return MaxCreepers - Math.Min(NPC.CountNPCS(ModContent.NPCType<MechCreeper>()), MaxCreepers);
         }
 
-        public override void PostDraw(SpriteBatch spriteBatch, Color drawColor)
+        public override bool PreDraw(SpriteBatch spriteBatch, Color drawColor)
         {
-            if (!SecondPhase) return;
+            if (!SecondPhase) return true;
 
-            // Parallel illusions
             Texture2D texture = Main.npcTexture[npc.type];
-            Player player = Main.player[Main.myPlayer];
-
             float opacity = (1f - ((float)npc.life / npc.lifeMax));
-            float npcOpacity = (1f - ((float)npc.alpha / 255f));
-
-            Vector2 center = player.Center - Main.screenPosition;
-            Vector2 drawPosition = player.Center - npc.Center;
             Vector2 drawOffset = new Vector2(npc.frame.Width / 2f, npc.frame.Height / 2f);
 
-            drawPosition.X *= -1f;
-            spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity * npcOpacity);
+            // Parallel illusions
+            if (Main.expertMode)
+            {
+                Player player = Main.player[Main.myPlayer];
 
-            drawPosition.X *= -1f;
-            spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity * npcOpacity);
+                float npcOpacity = (1f - ((float)npc.alpha / 255f));
 
-            drawPosition.Y *= -1f;
-            spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity * npcOpacity);
+                Vector2 center = player.Center - Main.screenPosition;
+                Vector2 drawPosition = player.Center - npc.Center;
+
+                drawPosition.X *= -1f;
+                spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity * npcOpacity);
+
+                drawPosition.X *= -1f;
+                spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity * npcOpacity);
+
+                drawPosition.Y *= -1f;
+                spriteBatch.Draw(texture, center + drawPosition - drawOffset, npc.frame, drawColor * opacity * npcOpacity);
+            }
 
             // Random illusions
             for (int i = 0; i < illusions.Count; i++)
@@ -468,6 +468,8 @@ namespace CholosRandomMod.NPCs.MechBrain
 
                 spriteBatch.Draw(texture, position - drawOffset, npc.frame, drawColor * opacity * 0.6f);
             }
+
+            return true;
         }
 
         public void RedRing()
@@ -502,12 +504,25 @@ namespace CholosRandomMod.NPCs.MechBrain
             if (transitioning || SecondPhase)
             {
                 frameIndex = nextFrame + 4;
-            } else
+            }
+            else
             {
                 frameIndex = nextFrame;
             }
 
             npc.frame.Y = frameIndex * frameHeight;
+        }
+
+        public override void BossLoot(ref string name, ref int potionType)
+        {
+            name = "The Steel Mind";
+            potionType = ItemID.GreaterHealingPotion;
+        }
+
+        public override bool? DrawHealthBar(byte hbPosition, ref float scale, ref Vector2 position)
+        {
+            scale = SecondPhase ? 0f : 1.5f;
+            return null;
         }
     }
 }
