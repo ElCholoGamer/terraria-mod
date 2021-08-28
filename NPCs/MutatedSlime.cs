@@ -127,7 +127,6 @@ namespace CholosRandomMod.NPCs
                         }
                     }
 
-                    JumpTimer = jumpCooldown;
                     npc.netUpdate = true;
                 }
                 JumpTimer--;
@@ -158,7 +157,7 @@ namespace CholosRandomMod.NPCs
                 if (!npc.HasValidTarget) return;
             }
 
-            if (Main.netMode != NetmodeID.MultiplayerClient && JumpTimer == 0f)
+            if (JumpTimer == 0f)
             {
                 // Jump
                 BigJumpTimer++;
@@ -176,9 +175,7 @@ namespace CholosRandomMod.NPCs
                 float distanceToPlayer = npc.position.X - Main.player[npc.target].position.X;
                 JumpDirection = Math.Sign(distanceToPlayer);
 
-                JumpTimer = jumpCooldown;
-
-                npc.netUpdate = true;
+                JumpTimer += jumpCooldown;
             }
 
             PreviousYVelocity = npc.velocity.Y;
