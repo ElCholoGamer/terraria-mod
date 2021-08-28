@@ -515,7 +515,6 @@ namespace CholosRandomMod.NPCs.MechBrain
 
         public override void BossLoot(ref string name, ref int potionType)
         {
-            name = "The Steel Mind";
             potionType = ItemID.GreaterHealingPotion;
         }
 
