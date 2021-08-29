@@ -6,14 +6,14 @@ using System.IO;
 
 namespace CholosRandomMod.NPCs.MechBrain.Attacks
 {
-    public class CircleAttack : NPCAttack<MechBrain>
+    public class CircleAround : NPCAttack<MechBrain>
     {
         public override float Duration => 230f;
 
         private float rotationSpeed;
         private bool showRing;
 
-        public CircleAttack(MechBrain brain) : base(brain)
+        public CircleAround(MechBrain brain) : base(brain)
         {
 
         }

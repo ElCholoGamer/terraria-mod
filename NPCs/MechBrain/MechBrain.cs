@@ -31,7 +31,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         public MechBrain()
         {
             phase2Attacks = new NPCAttack<MechBrain>[] {
-                new CircleAttack(this),
+                new CircleAround(this),
                 new ChainDash(this)
             };
         }
