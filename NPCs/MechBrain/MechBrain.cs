@@ -22,13 +22,17 @@ namespace CholosRandomMod.NPCs.MechBrain
         private bool spawnedCreepers = false;
         private bool forceSprite = false;
         private bool transitioning = false;
+        private bool initializeAttack = false;
 
         private readonly List<(Vector2 position, Vector2 velocity)> illusions = new List<(Vector2, Vector2)>();
         private float illusionTimer = 0f;
 
         public MechBrain()
         {
-            phase2Attacks = new NPCAttack<MechBrain>[] { new CircleAttack(this) };
+            phase2Attacks = new NPCAttack<MechBrain>[] {
+                new CircleAttack(this),
+                new ChainDash(this)
+            };
         }
 
         public override void SetStaticDefaults()
@@ -65,6 +69,9 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             npc.lifeMax = (int)(npc.lifeMax * 0.6f * bossLifeScale);
             npc.damage = (int)(npc.damage * 0.6f);
+
+            for (int i = 0; i < phase2Attacks.Length; i++)
+                phase2Attacks[i].ScaleExpertStats(numPlayers, bossLifeScale);
         }
 
         public override void BossHeadSlot(ref int index)
@@ -77,7 +84,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             get => Main.player[npc.target];
         }
-        
+
         public NPCAttack<MechBrain> CurrentAttack
         {
             get => phase2Attacks[(int)AttackIndex];
@@ -305,7 +312,13 @@ namespace CholosRandomMod.NPCs.MechBrain
             if (CycleDuration == 0f)
             {
                 CycleDuration = CurrentAttack.Duration;
+                initializeAttack = true;
+            }
+
+            if (initializeAttack)
+            {
                 CurrentAttack.Initialize();
+                initializeAttack = false;
             }
 
             if (Main.netMode != NetmodeID.MultiplayerClient && CycleTimer >= CycleDuration)
@@ -313,7 +326,7 @@ namespace CholosRandomMod.NPCs.MechBrain
                 CycleTimer -= CycleDuration;
 
                 AttackIndex = (AttackIndex + 1) % phase2Attacks.Length;
-                CurrentAttack.Initialize();
+                initializeAttack = true;
                 CycleDuration = CurrentAttack.Duration;
 
                 npc.velocity = Vector2.Zero;
@@ -342,6 +355,8 @@ namespace CholosRandomMod.NPCs.MechBrain
 
             if (!SecondPhase)
                 writer.Write(transitioning);
+            else
+                writer.Write(initializeAttack);
 
             if (SecondPhase)
             {
@@ -358,6 +373,8 @@ namespace CholosRandomMod.NPCs.MechBrain
 
             if (!SecondPhase)
                 transitioning = reader.ReadBoolean();
+            else
+                initializeAttack = reader.ReadBoolean();
 
             if (SecondPhase)
             {
