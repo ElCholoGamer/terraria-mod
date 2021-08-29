@@ -17,6 +17,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         public const string MechBrainHead = "CholosRandomMod/NPCs/MechBrain/MechBrain_Head_Boss";
         private const int MaxCreepers = 20;
         private readonly NPCAttack<MechBrain>[] phase2Attacks;
+        private int laserDamage = 40;
 
         // Local AI
         private bool spawnedCreepers = false;
@@ -69,6 +70,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             npc.lifeMax = (int)(npc.lifeMax * 0.6f * bossLifeScale);
             npc.damage = (int)(npc.damage * 0.6f);
+            laserDamage = (int)(laserDamage * 0.6f);
 
             for (int i = 0; i < phase2Attacks.Length; i++)
                 phase2Attacks[i].ScaleExpertStats(numPlayers, bossLifeScale);
@@ -347,6 +349,12 @@ namespace CholosRandomMod.NPCs.MechBrain
             }
 
             CycleTimer++;
+        }
+
+        public int ShootLaser(Vector2 direction)
+        {
+            Vector2 position = npc.Center + (direction * 30f);
+            return Projectile.NewProjectile(position, direction * 6f, ProjectileID.DeathLaser, laserDamage / 2, 0f, Main.myPlayer);
         }
 
         public override void SendExtraAI(BinaryWriter writer)
