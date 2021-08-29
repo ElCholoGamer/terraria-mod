@@ -1,6 +1,7 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Microsoft.Xna.Framework;
+using System;
 using System.IO;
 
 namespace CholosRandomMod.NPCs.MechBrain.Attacks
@@ -18,7 +19,9 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
         public override void Initialize()
         {
-            rotationSpeed = 6;
+            rotationSpeed = 6f;
+            if (Main.rand.NextBool())
+                rotationSpeed *= -1f;
         }
 
         public override void AI()
@@ -29,7 +32,9 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
                 modNPC.RedRing();
             }
 
-            if (rotationSpeed > 0.1f)
+            float absRotationSpeed = Math.Abs(rotationSpeed);
+
+            if (absRotationSpeed > 0.1f)
             {
                 float circleRadius = 250f;
 
@@ -38,15 +43,15 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
                 modNPC.npc.Center = nextTargetPosition + (direction.RotatedBy(MathHelper.ToRadians(rotationSpeed)) * circleRadius);
 
-                if (rotationSpeed > 2f)
+                if (absRotationSpeed > 2f)
                 {
                     rotationSpeed *= 0.985f;
                 }
-                else if (rotationSpeed > 1f)
+                else if (absRotationSpeed > 1f)
                 {
                     rotationSpeed *= 0.97f;
                 }
-                else if (rotationSpeed > 0.6f)
+                else if (absRotationSpeed > 0.6f)
                 {
                     rotationSpeed *= 0.93f;
                 }
@@ -55,7 +60,7 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
                     rotationSpeed *= 0.8f;
                 }
             }
-            else if (rotationSpeed > 0)
+            else if (absRotationSpeed > 0)
             {
                 // Start dash
                 rotationSpeed = 0f;
