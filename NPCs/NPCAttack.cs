@@ -19,6 +19,8 @@ namespace CholosRandomMod.NPCs
 
         public virtual void Initialize() { }
 
+        public virtual void ScaleExpertStats(int numPlayers, float bossLifeScale) { }
+
         public abstract void AI();
 
         public virtual void SendExtraAI(BinaryWriter writer) { }
