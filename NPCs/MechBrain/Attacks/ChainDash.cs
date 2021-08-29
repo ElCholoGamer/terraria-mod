@@ -9,7 +9,6 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
     {
         public override float Duration => 460f;
 
-        private int laserDamage = 40;
         private float dashes;
         private float dashCooldown;
         private bool showRedRing;
@@ -25,11 +24,6 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
             dashes = 4f;
             shoot = true;
             showRedRing = true;
-        }
-
-        public override void ScaleExpertStats(int numPlayers, float bossLifeScale)
-        {
-            laserDamage = (int)(laserDamage * 0.6f);
         }
 
         public override void AI()
@@ -59,18 +53,18 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
                     if (Main.expertMode)
                     {
-                        ShootLaser(directionToPlayer.RotatedBy(spread));
-                        ShootLaser(directionToPlayer.RotatedBy(-spread));
+                        modNPC.ShootLaser(directionToPlayer.RotatedBy(spread));
+                        modNPC.ShootLaser(directionToPlayer.RotatedBy(-spread));
                     }
 
                     if (dashes % 2 == 1)
                     {
-                        ShootLaser(directionToPlayer);
+                        modNPC.ShootLaser(directionToPlayer);
                     } else
                     {
                         float innerSpread = spread / 3;
-                        ShootLaser(directionToPlayer.RotatedBy(innerSpread));
-                        ShootLaser(directionToPlayer.RotatedBy(-innerSpread));
+                        modNPC.ShootLaser(directionToPlayer.RotatedBy(innerSpread));
+                        modNPC.ShootLaser(directionToPlayer.RotatedBy(-innerSpread));
                     }
 
                     shoot = false;
@@ -90,12 +84,6 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
             {
                 npc.velocity = Vector2.Zero;
             }
-        }
-
-        private void ShootLaser(Vector2 direction)
-        {
-            Vector2 position = modNPC.npc.Center + (direction * 25f);
-            Projectile.NewProjectile(position, direction * 6f, ProjectileID.DeathLaser, laserDamage / 2, 0f, Main.myPlayer);
         }
 
         public override void SendExtraAI(BinaryWriter writer)
