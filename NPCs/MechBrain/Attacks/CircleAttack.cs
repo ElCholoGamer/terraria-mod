@@ -11,6 +11,7 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
         public override float Duration => 230f;
 
         private float rotationSpeed;
+        private bool showRing;
 
         public CircleAttack(MechBrain brain) : base(brain)
         {
@@ -19,18 +20,27 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
         public override void Initialize()
         {
-            rotationSpeed = 6f;
-            if (Main.rand.NextBool())
-                rotationSpeed *= -1f;
+            showRing = true;
+
+            if (Main.netMode != NetmodeID.MultiplayerClient)
+            {
+                rotationSpeed = 6f;
+
+                if (Main.rand.NextBool())
+                    rotationSpeed *= -1f;
+
+                modNPC.npc.netUpdate = true;
+            }
         }
 
         public override void AI()
         {
-            // Telegraph dash
-            if (modNPC.CycleTimer == 60f)
+            if (modNPC.CycleTimer >= 15f && showRing)
             {
+                showRing = false;
                 modNPC.RedRing();
             }
+
 
             float absRotationSpeed = Math.Abs(rotationSpeed);
 
@@ -41,23 +51,30 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
                 Vector2 direction = modNPC.npc.DirectionFrom(modNPC.Target.Center);
                 Vector2 nextTargetPosition = modNPC.Target.Center + modNPC.Target.velocity; // Has to predict target's next position
 
-                modNPC.npc.Center = nextTargetPosition + (direction.RotatedBy(MathHelper.ToRadians(rotationSpeed)) * circleRadius);
+                bool rotate = modNPC.CycleTimer > 30f;
+                if (rotate)
+                    direction = direction.RotatedBy(MathHelper.ToRadians(rotationSpeed));
 
-                if (absRotationSpeed > 2f)
+                modNPC.npc.Center = nextTargetPosition + (direction * circleRadius);
+
+                if (rotate)
                 {
-                    rotationSpeed *= 0.985f;
-                }
-                else if (absRotationSpeed > 1f)
-                {
-                    rotationSpeed *= 0.97f;
-                }
-                else if (absRotationSpeed > 0.6f)
-                {
-                    rotationSpeed *= 0.93f;
-                }
-                else
-                {
-                    rotationSpeed *= 0.8f;
+                    if (absRotationSpeed > 2f)
+                    {
+                        rotationSpeed *= 0.985f;
+                    }
+                    else if (absRotationSpeed > 1f)
+                    {
+                        rotationSpeed *= 0.97f;
+                    }
+                    else if (absRotationSpeed > 0.6f)
+                    {
+                        rotationSpeed *= 0.93f;
+                    }
+                    else
+                    {
+                        rotationSpeed *= 0.8f;
+                    }
                 }
             }
             else if (absRotationSpeed > 0)
