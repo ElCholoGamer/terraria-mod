@@ -35,7 +35,9 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
         public override void AI()
         {
-            if (modNPC.CycleTimer >= 15f && showRing)
+            NPC npc = modNPC.npc;
+
+            if (npc.alpha == 0 && showRing)
             {
                 showRing = false;
                 modNPC.RedRing();
@@ -48,14 +50,14 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
             {
                 float circleRadius = 250f;
 
-                Vector2 direction = modNPC.npc.DirectionFrom(modNPC.Target.Center);
+                Vector2 direction = npc.DirectionFrom(modNPC.Target.Center);
                 Vector2 nextTargetPosition = modNPC.Target.Center + modNPC.Target.velocity; // Has to predict target's next position
 
                 bool rotate = modNPC.CycleTimer > 30f;
                 if (rotate)
                     direction = direction.RotatedBy(MathHelper.ToRadians(rotationSpeed));
 
-                modNPC.npc.Center = nextTargetPosition + (direction * circleRadius);
+                npc.Center = nextTargetPosition + (direction * circleRadius);
 
                 if (rotate)
                 {
@@ -82,14 +84,14 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
                 // Start dash
                 rotationSpeed = 0f;
 
-                modNPC.npc.velocity = modNPC.npc.DirectionTo(modNPC.Target.Center) * 15f;
+                npc.velocity = modNPC.npc.DirectionTo(modNPC.Target.Center) * 15f;
 
                 Main.PlaySound(SoundID.Roar, (int)modNPC.npc.Center.X, (int)modNPC.npc.Center.Y, 0, 1, 0.6f);
             }
             else
             {
                 // Reduce dash velocity
-                modNPC.npc.velocity *= 0.98f;
+                npc.velocity *= 0.98f;
             }
         }
 
