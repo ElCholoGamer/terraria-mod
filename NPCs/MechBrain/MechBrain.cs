@@ -1,4 +1,7 @@
 ﻿using CholosRandomMod.NPCs.MechBrain.Attacks;
+using CholosRandomMod.Items.Armor;
+using CholosRandomMod.Items.Placeable;
+using CholosRandomMod.Items.MechBrain;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -52,7 +55,7 @@ namespace CholosRandomMod.NPCs.MechBrain
             npc.knockBackResist = 0f;
             npc.width = 158;
             npc.height = 144;
-            npc.value = Item.buyPrice(0, 15, 0, 0);
+            npc.value = Item.buyPrice(0, 12, 0, 0);
             npc.npcSlots = 15f;
             npc.boss = true;
             npc.lavaImmune = true;
@@ -63,6 +66,7 @@ namespace CholosRandomMod.NPCs.MechBrain
             npc.buffImmune[BuffID.Poisoned] = true;
             npc.dontTakeDamage = true;
             music = MusicID.Boss3;
+            bossBag = ModContent.ItemType<MechBrainBag>();
 
             drawOffsetY = 22;
         }
@@ -79,7 +83,7 @@ namespace CholosRandomMod.NPCs.MechBrain
 
         public override void BossHeadSlot(ref int index)
         {
-            index = SecondPhase ? -1 : ModContent.GetModBossHeadSlot(MechBrainHead);
+            index = SecondPhase && Main.expertMode ? -1 : ModContent.GetModBossHeadSlot(MechBrainHead);
         }
 
         // Just for convenience
@@ -552,6 +556,26 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             scale = SecondPhase ? 0f : 1.5f;
             return null;
+        }
+
+        public override void NPCLoot()
+        {
+            if (Main.rand.NextBool(10))
+            {
+                Item.NewItem(npc.getRect(), ModContent.ItemType<MechBrainTrophy>());
+            }
+
+            if (Main.expertMode)
+            {
+                npc.DropBossBags();
+            } else
+            {
+                if (Main.rand.NextBool(7))
+                    Item.NewItem(npc.getRect(), ModContent.ItemType<MechBrainMask>());
+                
+                Item.NewItem(npc.getRect(), ModContent.ItemType<SoulofPlight>(), 25 + Main.rand.Next(16));
+                Item.NewItem(npc.getRect(), ItemID.HallowedBar, 15 + Main.rand.Next(16));
+            }
         }
     }
 }
