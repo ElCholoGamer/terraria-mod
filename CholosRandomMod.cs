@@ -1,21 +1,51 @@
+using System;
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using CholosRandomMod.Items.MechBrain;
+using CholosRandomMod.Items.Armor;
+using CholosRandomMod.Items.Placeable;
 using CholosRandomMod.NPCs.MechBrain;
 
 namespace CholosRandomMod
 {
     public class CholosRandomMod : Mod
     {
-        public override void Load()
+        public override void PostSetupContent()
         {
             Mod yabhb = ModLoader.GetMod("FKBossHealthBar");
             if(yabhb != null)
             {
                 yabhb.Call("RegisterMechHealthBarMulti", 
                     ModContent.NPCType<MechBrain>(), ModContent.NPCType<MechCreeper>());
+            }
+
+            Mod bossChecklist = ModLoader.GetMod("BossChecklist");
+            if (bossChecklist != null)
+            {
+                bossChecklist.Call(
+                    "AddBoss",
+                    9.1f,
+                    ModContent.NPCType<MechBrain>(),
+                    this,
+                    "The Steel Mind",
+                    (Func<bool>)(() => CholosModWorld.downedMechBrain),
+                    ModContent.ItemType<MechSpine>(),
+                    new List<int> { 
+                        ModContent.ItemType<MechBrainTrophy>(), 
+                        ModContent.ItemType<MechBrainMask>(), 
+                        ItemID.MusicBoxBoss3 },
+                    new List<int> {
+                        ModContent.ItemType<MechBrainBag>(),
+                        ModContent.ItemType<MechanicalProcessorPiece>(),
+                        ModContent.ItemType<SoulofPlight>(),
+                        ItemID.HallowedBar,
+                        ItemID.GreaterHealingPotion
+                    },
+                    "Use [i:" + ModContent.ItemType<MechSpine>() + "] at night.",
+                    "The Steel Mind has done its deed");
             }
         }
 
