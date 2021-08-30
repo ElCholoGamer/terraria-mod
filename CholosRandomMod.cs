@@ -3,11 +3,22 @@ using Terraria.ID;
 using Terraria.ModLoader;
 using Microsoft.Xna.Framework;
 using CholosRandomMod.Items.MechBrain;
+using CholosRandomMod.NPCs.MechBrain;
 
 namespace CholosRandomMod
 {
     public class CholosRandomMod : Mod
     {
+        public override void Load()
+        {
+            Mod yabhb = ModLoader.GetMod("FKBossHealthBar");
+            if(yabhb != null)
+            {
+                yabhb.Call("RegisterMechHealthBarMulti", 
+                    ModContent.NPCType<MechBrain>(), ModContent.NPCType<MechCreeper>());
+            }
+        }
+
         public override void AddRecipeGroups()
         {
             RecipeGroup group = new RecipeGroup(() => "Any Evil Scale", new int[] { ItemID.ShadowScale, ItemID.TissueSample });
