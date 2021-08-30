@@ -163,5 +163,13 @@ namespace CholosRandomMod.NPCs.MechBrain
                 owner.position.X + homeOffset.X,
                 owner.position.Y + homeOffset.Y);
         }
+
+        public override void NPCLoot()
+        {
+            if (Main.rand.NextBool(2))
+            {
+                Item.NewItem(npc.getRect(), ItemID.Heart);
+            }
+        }
     }
 }
