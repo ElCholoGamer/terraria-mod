@@ -2,6 +2,7 @@ Cholo's Random Mod is pretty much that. A mod I'm doing to learn about Terraria 
 
 Currently adds:
 
+- The Steel Mind: A mechanical Brain of Cthulhu boss that drops souls of plight.
 - The Bomber: A Snowman Cannon upgrade that fires a rocket that leaves trailing mines.
 - Extraterrestrial Tome: A magic spell that fires a tesla turret that explodes into sparks.
 - Dungeon Spirit Staff: Summons a spirit minion that shoots homing lost souls.
