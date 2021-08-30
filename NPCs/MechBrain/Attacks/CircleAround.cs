@@ -46,7 +46,7 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
             float absRotationSpeed = Math.Abs(rotationSpeed);
 
-            if (absRotationSpeed > 0.1f)
+            if (absRotationSpeed > 0.3f)
             {
                 float circleRadius = 250f;
 
