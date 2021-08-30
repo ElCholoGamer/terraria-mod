@@ -80,6 +80,7 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
                 int projID = Projectile.NewProjectile(position, velocity, ProjectileID.DeathLaser, modNPC.laserDamage / 2, 0f, Main.myPlayer, 1f);
                 Main.projectile[projID].alpha = 120;
                 Main.projectile[projID].timeLeft = 180;
+                Main.projectile[projID].tileCollide = false;
             }
             else if (modNPC.CycleTimer > rainAt && modNPC.CycleTimer < rainUntil)
             {
@@ -95,13 +96,14 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
 
                     Vector2 position = new Vector2(npc.Center.X + offsetFromNPC, myPlayer.Center.Y - 800f);
 
-                    Projectile.NewProjectile(
+                    int projID = Projectile.NewProjectile(
                         position, 
                         new Vector2(0f, 15f), 
                         ProjectileID.DeathLaser, 
                         modNPC.laserDamage, 
                         0f, 
                         Main.myPlayer, -1f, -1f);
+                    Main.projectile[projID].tileCollide = false;
                 }
             }
         }
