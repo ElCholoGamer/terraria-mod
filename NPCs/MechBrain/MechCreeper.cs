@@ -92,8 +92,8 @@ namespace CholosRandomMod.NPCs.MechBrain
             bool charging = CycleTimer >= ChargeAt;
 
             // Go to respective position
-            float speed = 10f;
-            float inertia = 20f;
+            float speed = 13f;
+            float inertia = 25f;
 
             Player player = Main.player[npc.target];
             Vector2 targetPosition = charging ? player.Center : GetHomePosition(owner);
@@ -117,7 +117,7 @@ namespace CholosRandomMod.NPCs.MechBrain
             }
 
             // Shoot when timer reaches 0
-            if (Main.netMode != NetmodeID.MultiplayerClient && --ShootTimer <= 0)
+            if (Main.netMode != NetmodeID.MultiplayerClient && !charging && --ShootTimer <= 0)
             {
                 Vector2 velocity = npc.DirectionTo(player.Center) * 8f;
 
@@ -132,8 +132,8 @@ namespace CholosRandomMod.NPCs.MechBrain
                 int maxCreepers = 20;
                 int killedCreepers = maxCreepers - (int)MathHelper.Min(NPC.CountNPCS(npc.type), maxCreepers);
 
-                float randomDelay = Main.rand.NextFloat(400f - (killedCreepers * (380f / maxCreepers)));
-                ShootTimer += 360f + randomDelay - (killedCreepers * (320f / maxCreepers));
+                float randomDelay = Main.rand.NextFloat(700f - (killedCreepers * (680f / maxCreepers)));
+                ShootTimer += 400f + randomDelay - (killedCreepers * (360f / maxCreepers));
                 npc.netUpdate = true;
             }
         }
@@ -152,7 +152,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             homeOffset = new Vector2(Main.rand.NextFloat(owner.width), Main.rand.NextFloat(owner.height));
             ChargeAt = 80f + Main.rand.NextFloat(500f);
-            ChargeDuration = 60f + Main.rand.NextFloat(80f);
+            ChargeDuration = 80f + Main.rand.NextFloat(100f);
 
             npc.netUpdate = true;
         }
