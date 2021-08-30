@@ -1,9 +1,8 @@
 ﻿using Terraria;
 using Terraria.ID;
 using Terraria.ModLoader;
-using CholosRandomMod.NPCs.MechBrain;
 
-namespace CholosRandomMod.Items
+namespace CholosRandomMod.Items.MechBrain
 {
     public class MechSpine : ModItem
     {
@@ -24,17 +23,17 @@ namespace CholosRandomMod.Items
             item.useAnimation = 45;
             item.useTime = 45;
             item.useStyle = ItemUseStyleID.HoldingUp;
-            //item.consumable = true;
+            item.consumable = true;
         }
 
         public override bool CanUseItem(Player player)
         {
-            return !Main.dayTime && !NPC.AnyNPCs(ModContent.NPCType<MechBrain>());
+            return !Main.dayTime && !NPC.AnyNPCs(ModContent.NPCType<NPCs.MechBrain.MechBrain>());
         }
 
         public override bool UseItem(Player player)
         {
-            NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<MechBrain>());
+            NPC.SpawnOnPlayer(player.whoAmI, ModContent.NPCType<NPCs.MechBrain.MechBrain>());
             Main.PlaySound(SoundID.Roar, player.Center, 0);
             return true;
         }
@@ -47,7 +46,6 @@ namespace CholosRandomMod.Items
             recipe.AddIngredient(ItemID.SoulofNight, 2);
             recipe.AddIngredient(ItemID.SoulofLight, 2);
             recipe.AddIngredient(ItemID.SoulofFlight, 2);
-            recipe.AddIngredient(ItemID.TissueSample, 6);
 
             recipe.AddTile(TileID.MythrilAnvil);
             recipe.SetResult(this);
