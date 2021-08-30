@@ -85,10 +85,10 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
             else if (modNPC.CycleTimer > rainAt && modNPC.CycleTimer < rainUntil)
             {
                 // Rain down lasers
-                float range = 4000f;
+                float range = 3000f;
                 Player myPlayer = Main.player[Main.myPlayer];
 
-                for (int i = 0; i < 10; i++)
+                for (int i = 0; i < 8; i++)
                 {
                     float offsetFromNPC = (safeArea / 2) + Main.rand.NextFloat(range);
                     if (Main.rand.NextBool())
@@ -103,7 +103,7 @@ namespace CholosRandomMod.NPCs.MechBrain.Attacks
                         modNPC.laserDamage, 
                         0f, 
                         Main.myPlayer, -1f, -1f);
-                    Main.projectile[projID].tileCollide = false;
+                    Main.projectile[projID].timeLeft = 120;
                 }
             }
         }
