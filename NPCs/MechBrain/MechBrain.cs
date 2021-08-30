@@ -264,7 +264,7 @@ namespace CholosRandomMod.NPCs.MechBrain
             // Telegraph dash
             if (CycleTimer == fadeDuration + moveDuration - 45f)
             {
-                Main.PlaySound(SoundID.Roar, npc.Center, 0);
+                Main.PlaySound(SoundID.Item33, npc.Center);
                 RedRing();
             }
 
