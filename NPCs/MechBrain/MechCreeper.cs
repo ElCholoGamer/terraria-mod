@@ -128,13 +128,12 @@ namespace CholosRandomMod.NPCs.MechBrain
                 if (Main.expertMode) damage = (int)(damage * 0.8f);
 
                 Projectile.NewProjectile(npc.Center, velocity.RotatedBy(spread), ProjectileID.PinkLaser, damage / 2, 0f, Main.myPlayer);
-                Main.PlaySound(SoundID.Item33, npc.Center);
 
                 int maxCreepers = 20;
                 int killedCreepers = maxCreepers - (int)MathHelper.Min(NPC.CountNPCS(npc.type), maxCreepers);
 
-                float randomDelay = Main.rand.NextFloat(240f - (killedCreepers * (190f / maxCreepers)));
-                ShootTimer += 180f + randomDelay - (killedCreepers * (140f / maxCreepers));
+                float randomDelay = Main.rand.NextFloat(400f - (killedCreepers * (380f / maxCreepers)));
+                ShootTimer += 360f + randomDelay - (killedCreepers * (320f / maxCreepers));
                 npc.netUpdate = true;
             }
         }
