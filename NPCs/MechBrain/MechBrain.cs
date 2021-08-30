@@ -15,9 +15,9 @@ namespace CholosRandomMod.NPCs.MechBrain
     public class MechBrain : ModNPC
     {
         public const string MechBrainHead = "CholosRandomMod/NPCs/MechBrain/MechBrain_Head_Boss";
+        public int laserDamage = 40;
         private const int MaxCreepers = 20;
         private readonly NPCAttack<MechBrain>[] phase2Attacks;
-        private int laserDamage = 40;
 
         // Local AI
         private bool spawnedCreepers = false;
@@ -32,7 +32,8 @@ namespace CholosRandomMod.NPCs.MechBrain
         {
             phase2Attacks = new NPCAttack<MechBrain>[] {
                 new CircleAround(this),
-                new ChainDash(this)
+                new ChainDash(this),
+                new LaserRain(this)
             };
         }
 
@@ -354,7 +355,10 @@ namespace CholosRandomMod.NPCs.MechBrain
         public int ShootLaser(Vector2 direction)
         {
             Vector2 position = npc.Center + (direction * 30f);
-            return Projectile.NewProjectile(position, direction * 6f, ProjectileID.DeathLaser, laserDamage / 2, 0f, Main.myPlayer);
+            int projID = Projectile.NewProjectile(position, direction * 6f, ProjectileID.DeathLaser, laserDamage / 2, 0f, Main.myPlayer);
+            Main.projectile[projID].alpha = 255;
+
+            return projID;
         }
 
         public override void SendExtraAI(BinaryWriter writer)
@@ -396,7 +400,7 @@ namespace CholosRandomMod.NPCs.MechBrain
         public void TeleportAround(Player target, float length = -1f)
         {
             if (length == -1f)
-                length = 350f + Main.rand.NextFloat(150f);
+                length = 420f + Main.rand.NextFloat(200f);
 
             Vector2 distance = Main.rand.NextVector2Unit() * length;
 
@@ -491,7 +495,8 @@ namespace CholosRandomMod.NPCs.MechBrain
             {
                 (Vector2 position, Vector2 _) = illusions[i];
 
-                spriteBatch.Draw(texture, position - drawOffset, npc.frame, drawColor * opacity * 0.6f);
+                float reduceOpacity = Main.expertMode ? 1f : 0.6f;
+                spriteBatch.Draw(texture, position - drawOffset, npc.frame, drawColor * opacity * reduceOpacity);
             }
 
             return true;
