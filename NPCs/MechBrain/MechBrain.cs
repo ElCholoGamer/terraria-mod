@@ -560,11 +560,13 @@ namespace CholosRandomMod.NPCs.MechBrain
 
         public override void NPCLoot()
         {
+            // Trophy
             if (Main.rand.NextBool(10))
             {
                 Item.NewItem(npc.getRect(), ModContent.ItemType<MechBrainTrophy>());
             }
 
+            // Boss loot
             if (Main.expertMode)
             {
                 npc.DropBossBags();
@@ -575,6 +577,16 @@ namespace CholosRandomMod.NPCs.MechBrain
                 
                 Item.NewItem(npc.getRect(), ModContent.ItemType<SoulofPlight>(), 25 + Main.rand.Next(16));
                 Item.NewItem(npc.getRect(), ItemID.HallowedBar, 15 + Main.rand.Next(16));
+            }
+
+            // Other stuff
+            if (!CholosModWorld.downedMechBrain)
+            {
+                CholosModWorld.downedMechBrain = true;
+                if (Main.netMode == NetmodeID.Server)
+                {
+                    NetMessage.SendData(MessageID.WorldData); // Sync new downedMechBrain world state
+                }
             }
         }
     }
